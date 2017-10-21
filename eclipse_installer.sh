@@ -24,7 +24,7 @@ net_check(){
 }
 
 get_eclipse(){
-	if [ which curl ];then
+	if [ -x /usr/bin/curl ];then
 		download_progress
 		cd $TMP && { curl -O $LINK ; cd -; }
 		download_progress
@@ -34,7 +34,7 @@ get_eclipse(){
 		else
 			printf "\n Something went wrong\n";exit 1;
 		fi
-	elif [ which wget ];then
+	elif [ -x /usr/bin/curl ];then
 		download_progress
 		wget  $LINK  -O $TMP/$FILE &> /dev/null
 		download_progress
