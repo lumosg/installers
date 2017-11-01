@@ -13,6 +13,7 @@ TMP="/tmp"
 LINK="http://eclipse.bluemix.net/packages/neon.3/data/eclipse-jee-neon-3-linux-gtk-x86_64.tar.gz"
 FILE="eclipse.tar.gz"
 NAME="eclipse"
+#downloader="wget"
 ###Functions
 net_check(){
 	cmd=$(ping -c 1 vk.com &> /dev/null; echo $?)
@@ -34,7 +35,7 @@ get_eclipse(){
 		else
 			printf "\n Something went wrong\n";exit 1;
 		fi
-	elif [ -x /usr/bin/curl ];then
+	elif [ -x /usr/bin/wget ];then
 		download_progress
 		wget  $LINK  -O $TMP/$FILE &> /dev/null
 		download_progress
@@ -52,7 +53,7 @@ get_eclipse(){
 download_progress(){
 	local spin='|/-\'
 	local delay=0.5
-	progress=$(ps aux|grep -v grep|grep eclipse &> /dev/null ;echo $?) 
+	progress=$(ps aux|grep -v grep|grep wget &> /dev/null ;echo $?) 
 	while [ $progress -eq 0 ]
 		do
 			local temp=${spin#?}
