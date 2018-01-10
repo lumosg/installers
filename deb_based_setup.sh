@@ -3,7 +3,7 @@
 #Author  : br0k3ngl255
 #Date    : 27.08.3017
 #Purpose : setup systems features on debian based systems.
-#Version : 3.0.0
+#Version : 3.0.1
 
 #TODO: write a function that follows the stages of script and lets the use know whats going on.
 #TODP: add function that upgrades system if such is needed.
@@ -12,6 +12,7 @@
 logFolder="/tmp"
 log="install_log.txt"
 logFile="$logFile/$log"
+line="=============================================================="
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -25,6 +26,7 @@ GEN_GRUB_CONFIG="/boot/grub/grub.cfg"
 TMP="/tmp"
 MATE_SESSION_DIR="/home/$USER/.config/autostart/"
 PLANK_APP=
+
 INSTALLER="apt-get"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -66,19 +68,21 @@ deb http://ftp.$REPONAME.org/$REPONAME/ $KODENAME-backports non-free contrib\n
 
 sys_upgrade_check(){
 	current_distro=$(cat /etc/*-release|grep "^ID"|grep -E -o "[a-z]w+")
-		if [ $current_distro == "debian" ];then
+		if [ "$current_distro" == "debian" ];then
 			apt-get update && apt-get upgrade &>> $logFile
 		fi
-		if [ $current_distro == "redhat" ];then
+		if [ "$current_distro" == "redhat" ];then
 			yum update -y
 		fi
 	}
 
 sys_stat(){
-	pac_stat=$(ps aux |grep -v grep |grep apt-get;echo $?)
-	while 1;
+
+	pac_stat=$(ps aux |grep -v grep |grep apt-get &> /dev/null ;echo $?)
+
+	while true;
 		do
-			if pac_stat;then
+			if [ $pac_stat == "0" ];then
 				printf "processing apt-get \n"
 				sleep 5
 			else
@@ -105,7 +109,15 @@ cd $TMP
 wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O-  |  apt-key add - &> $NULL;
 wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O-  &> $NULL|  apt-key add - &> $NULL;
 wget -q  http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Debian_7.0/Release.key -O-  |apt-key add - &> $NULL;
-curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - &> $NULL;
+
+
+if [ which curl ];then
+	curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - &> $NULL;
+else
+	echo $line
+	echo "no curl installed"
+	echo $line
+fi
 cd $HOME
     }
 
@@ -115,9 +127,11 @@ cd $HOME
 			if [ "$pac_check" == "0" ];then
 				true
 			else
-			    printf "preparing to install $i \t"
+			    	printf "$line\n"
+				printf "preparing to install $i \t"
 				apt-get install -y $i &> $logFile
 				printf "installed  \n"
+				printf "$line\n"
 			fi
 	done
 }'
