@@ -40,10 +40,10 @@ lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-d
 ###Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
 help(){
-	printf "$line"
-	printf "\n usage : $0 -I apt-get -U username -P password \n"
+	printf "$line\n"
+	printf "usage : $0 -I apt-get -U username -P password"
+	printf "\n$line"
 	exit 1
-	printf "$line"
 }
 
 insert_repo(){
@@ -324,11 +324,11 @@ if [[ $EUID == "0" ]];then
 					*)  help; exit 1 ;;
 				esac
 			done
-				if [ -z $i -o -z $I  ] && [ -z $p -o -z $P ] && [ -z $u -o -z $U ];then
-					printf "$cursor\n"
-						help
-					printf "\n$cursor"
-				else
+#				if [ -z $i -o -z $I  ] && [ -z $p -o -z $P ] && [ -z $u -o -z $U ];then
+#					printf "$cursor\n"
+#						help
+#					printf "\n$cursor"
+#				else
 						printf "$cursor"
 						printf "\nsetting up general user\n"
 						printf "$cursor"
@@ -383,7 +383,7 @@ if [[ $EUID == "0" ]];then
 							jBase_install
 							sys_stat
 						fi
-				fi
+#				fi
 else
 	printf "$cursor\n"
 	printf "Please get root privileges"
