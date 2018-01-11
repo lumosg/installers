@@ -283,7 +283,7 @@ set_up_plank(){
 '
 jBase_install(){
 	
-	if [ which curl ];then
+	if [ -e $(which curl) ];then
 		printf "$line\n"
 		printf "installing SDKMAN\n"
 		 curl -s "https://get.sdkman.io" | bash  &> $logFile
