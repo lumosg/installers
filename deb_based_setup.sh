@@ -148,9 +148,7 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\n" "preparing to install $i "
-					apt-get install -y $i &>> $logFile
-				 "installed  "
+				printf "%-40s %s\n" "preparing to install $i $(apt-get install -y $i &>> $logFile)"  "installed  "
 			fi
 		done
 		
@@ -256,7 +254,7 @@ set_working_env(){ #user env setup
                                 true
                             else
                                 printf 'GRUB_BACKGROUND="/usr/share/backgrounds/cosmos/comet.jpg"\n' >> $GRUB_DEFAULT_CONFIG;
-                                    grub-mkconfig -o $GRUB_CONFIG
+                                    grub2-mkconfig -o $GRUB_CONFIG
                             fi
 	    }
 : '
@@ -386,7 +384,7 @@ if [[ $EUID == "0" ]];then
 #				fi
 else
 	printf "$cursor\n"
-	printf "Please get root privileges"
-	exit 1;
+		printf "Please get root privileges"
 	printf "\n$cursor"
+	exit 1;
 fi
