@@ -139,38 +139,36 @@ cd $HOME
 }'
 
 multi_pac_install(){
-	printf "$line"
+	printf "$line\n"
 	printf "installing DEV packages"
-	printf "$line"
+	printf "\n$line"
 	for i in "${dev_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-20s %s\n" "preparing to install $i \t"
+				printf "%-40s %s" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "%-20s %s\n" "installed  \n"
-			fi
-		done
-	printf "$line"
+				printf "%-40s %s" "installed  "
+	printf "$line\n"
 	printf "installing FRMWARE packages"
-	printf "$line"
+	printf "\n$line"
 	for i in "${firmware_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-20s %s\n" "preparing to install $i \t"
+				printf "%-40s %s" "preparing to install $i \t"
 					apt-get install -y $i &>> $logFile
-				printf "%-20s %s\n" "installed  \n"
+				printf "%-40s %s" "installed  \n"
 			fi
 		done
 		
-	printf "$line"
+	printf "$line\n"
 	printf " installing GUI packages"
-	printf "$line"
+	printf "\n$line"
 
 	for i in "${gui_packages[@]}";
 		do
@@ -178,24 +176,24 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-20s %s\n" "preparing to install $i \t"
+				printf "%-40s %s" "preparing to install $i"
 					apt-get install -y $i &>> $logFile
-				printf "%-20s %s\n" "installed  \n"
+				printf "%-40s %s" "installed  \n"
 			fi
 		done
 		
-	printf "$line"
+	printf "$line\n"
 	printf " installing LIB packages"
-	printf "$line"
+	printf "\n$line"
 	for i in "${lib_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-20s %s\n" "preparing to install $i \t"
+				printf "%-40s %s" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "%-20s %s\n" "installed  \n"
+				printf "%-40s %s" "installed  \n"
 			fi
 		done
 	}
