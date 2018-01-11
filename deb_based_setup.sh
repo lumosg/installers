@@ -123,20 +123,6 @@ fi
 cd $HOME
     }
 
-: 'pac_install(){ #
-	for i in "${packages[@]}";do
-		pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
-			if [ "$pac_check" == "0" ];then
-				true
-			else
-			    	printf "$line\n"
-				printf "preparing to install $i \t"
-				apt-get install -y $i &> $logFile
-				printf "installed  \n"
-				printf "$line\n"
-			fi
-	done
-}'
 
 multi_pac_install(){
 	printf "$line\n"
