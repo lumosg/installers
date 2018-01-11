@@ -137,51 +137,65 @@ cd $HOME
 			fi
 	done
 }'
+
 multi_pac_install(){
-	printf "installing dev packages"
+	printf "$line"
+	printf "installing DEV packages"
+	printf "$line"
 	for i in "${dev_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				  printf "preparing to install $i \t"
-				apt-get install -y $i &>> $logFile
-				printf "installed  \n"
+				printf "%-20s %s\n" "preparing to install $i \t"
+					apt-get install -y $i &>> $logFile
+				printf "%-20s %s\n" "installed  \n"
 			fi
 		done
-	printf "installing dev packages"
+	printf "$line"
+	printf "installing FRMWARE packages"
+	printf "$line"
 	for i in "${firmware_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				  printf "preparing to install $i \t"
-				apt-get install -y $i &>> $logFile
-				printf "installed  \n"
+				printf "%-20s %s\n" "preparing to install $i \t"
+					apt-get install -y $i &>> $logFile
+				printf "%-20s %s\n" "installed  \n"
 			fi
 		done
+		
+	printf "$line"
+	printf " installing GUI packages"
+	printf "$line"
+
 	for i in "${gui_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				  printf "preparing to install $i \t"
-				apt-get install -y $i &>> $logFile
-				printf "installed  \n"
+				printf "%-20s %s\n" "preparing to install $i \t"
+					apt-get install -y $i &>> $logFile
+				printf "%-20s %s\n" "installed  \n"
 			fi
 		done
+		
+	printf "$line"
+	printf " installing LIB packages"
+	printf "$line"
 	for i in "${lib_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				  printf "preparing to install $i \t"
-				apt-get install -y $i &>> $logFile
-				printf "installed  \n"
+				printf "%-20s %s\n" "preparing to install $i \t"
+					apt-get install -y $i &>> $logFile
+				printf "%-20s %s\n" "installed  \n"
 			fi
 		done
 	}
@@ -192,7 +206,9 @@ set_general_user(){
             printf " no username provided to create"
       else
             if [ "$user_chk" == "0" ];then
+				printf "$line"
                 printf "user already exists";true
+				printf "$line"
             elif [ "$user_chk" != "0" ];then
                     useradd -m -p $(mkpasswd "$PASSWD") -s /bin/bash -G adm,sudo,www-data,root $USER
             fi
@@ -223,7 +239,7 @@ set_working_env(){ #user env setup
                   alias log='cd /var/log'; alias drop_caches='echo 3 > /proc/sys/vm/drop_caches'; \n
                   alias ip_forward='echo 1 > /proc/sys/net/ipv4/ip_forward'; \n
                   alias self_destruct='dd if=/dev/zero of=/dev/sda' \n
-                  " >> $BASHRC &>> $logFile;
+                  " >> $BASHRC;
                 source $BASHRC
                 file_check=$(ls /usr/share/backgrounds/cosmos/comet.jpg >> /dev/null;printf "$?\n")
                         if [ "$file_check" == "0" ];then
@@ -262,6 +278,16 @@ set_up_plank(){
 	
 	}
 '
+jBase_install(){
+	
+	if [ which curl ];then
+		printf "$line\n"
+		printf "installing SDKMAN\n"
+		 curl -s "https://get.sdkman.io" | bash  &> $logFile
+		printf "$line\n"
+	fi
+}
+
 set_docker_ce(){
 	
 	add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
@@ -314,6 +340,7 @@ if [[ $EUID == "0" ]];then
 					
 					if net_check;then
 						set_working_env
+						sys_stat
 						sys_upgrade_check
 						sys_stat
 						repo_certs
@@ -321,6 +348,9 @@ if [[ $EUID == "0" ]];then
 						multi_pac_install
 						sys_stat
 						set_docker_ce
+						sys_stat
+						jBase_install
+						sys_stat
 					fi
 else
 	printf "\nPlease get root privileges\n";exit 1;
