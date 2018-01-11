@@ -137,6 +137,9 @@ multi_pac_install(){
 				printf "%-40s %s" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
 				printf "%-40s %s" "installed  "
+			fi
+		done
+		
 	printf "$line\n"
 	printf "installing FRMWARE packages"
 	printf "\n$line"
@@ -186,13 +189,15 @@ multi_pac_install(){
 
 set_general_user(){
         user_chk=$(cat /etc/passwd|grep $USER &> $NULL;printf "$?\n")
-      if [ $USER == " " ];then
+      if [ $USER == "" ];then
+			printf "$line/n"
             printf " no username provided to create"
+            printf "\n$line"
       else
             if [ "$user_chk" == "0" ];then
-				printf "$line"
-                printf "user already exists";true
-				printf "$line"
+				printf "$line\n"
+                printf "$USER already exists";true
+				printf "\n$line"
             elif [ "$user_chk" != "0" ];then
                     useradd -m -p $(mkpasswd "$PASSWD") -s /bin/bash -G adm,sudo,www-data,root $USER
             fi
