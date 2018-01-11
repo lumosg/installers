@@ -150,7 +150,7 @@ multi_pac_install(){
 			else
 				printf "%-40s %s\n" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "installed  "
+				 "installed  "
 			fi
 		done
 		
