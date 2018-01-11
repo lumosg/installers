@@ -3,11 +3,11 @@
 #Author  : br0k3ngl255
 #Date    : 27.08.3017
 #Purpose : setup systems features on debian based systems.
-#Version : 3.0.1
+#Version : 3.0.2
 
 #TODO: write a function that follows the stages of script and lets the use know whats going on.
-#TODP: add function that upgrades system if such is needed.
-
+#TODO: add function that upgrades system if such is needed.
+#TODO: make repository deployment more general and save for each distro.
 ###Vars ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 logFolder="/tmp"
 log="install_log.txt"
@@ -32,14 +32,16 @@ export DEBIAN_FRONTEND=noninteractive
 
 dev_packages=("python-scapy" " python-pip" " python-networkx " "python-netaddr " " python-netifaces" " python-netfilter " " apt-transport-https" " ca-certificates " "curl " "gnupg2 " "software-properties-common" " " "python-gnuplot " " python-mako " "python-radix " "ipython " " ipython3 " "python-pycurl " " python-lxml" "python-nmap " " python-flask" " python-scrapy" " perl-modules" " build-essential" " cmake" " bison " " flex" " git"  )
 firmware_packages=( "firmware-misc-nonfree"  "firmware-atheros" " firmware-brcm80211" "firmware-samsung" " firmware-realtek" "firmware-linux" " firmware-linux-free" " firmware-linux-nonfree" " intel-microcode" "firmware-zd1211" )
-gui_packages=("lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
+gui_packages=("lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
 lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-dev" " libltdl3-dev" " libncurses-dev" " libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev" "libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool" " libsqlite3-dev" " libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev" "libstdc++6-4.9-dbg")
 
 
 ###Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
 help(){
+	printf "$line"
 	printf "\n usage : $0 -I apt-get -U username -P password \n"
+	printf "$line"
 }
 
 insert_repo(){
