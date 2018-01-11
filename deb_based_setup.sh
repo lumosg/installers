@@ -13,6 +13,7 @@ logFolder="/tmp"
 log="install_log.txt"
 logFile="$logFile/$log"
 line="=============================================================="
+cursor="###############################################################"
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -41,6 +42,7 @@ lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-d
 help(){
 	printf "$line"
 	printf "\n usage : $0 -I apt-get -U username -P password \n"
+	exit 1
 	printf "$line"
 }
 
@@ -95,13 +97,25 @@ sys_stat(){
 net_check(){
 	net_stat=$(ping -c 1 vk.com > $NULL 2> $NULL ;printf "$?\n")
 			if [ $net_stat == "1" ] || [ $net_stat == "2" ];then
-				printf "\n NO NETWORK - \n"
-				return 1000
+				printf "$line\n"
+				printf "NO NETWORK - Get Online"
+				printf "\n$line"				
+				return 1
 			elif [ $net_stat == "0" ];then
-					printf "Network is UP\n";sleep 2;printf "starting app install\n";
+				printf "$line\n"
+					printf "Network is UP"
+				printf "\n$line"
+
+					sleep 2
+				printf "$line\n"
+					printf "starting app install";
+				printf "\n$line"
+
 					#insertRepo $REPONAME
 					apt-get update
+				printf "$line\n"
 					printf "finished updating repo cache"
+				printf "\n$line"
 					return 0
 			fi
 	}
@@ -134,9 +148,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s" "preparing to install $i "
+				printf "%-40s %s\n" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "%-40s %s" "installed  "
+				printf "installed  "
 			fi
 		done
 		
@@ -149,9 +163,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s" "preparing to install $i \t"
+				printf "%-40s %s\n" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "%-40s %s" "installed  \n"
+				printf  "installed  \n"
 			fi
 		done
 		
@@ -165,9 +179,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s" "preparing to install $i"
+				printf "%-40s %s\n" "preparing to install $i"
 					apt-get install -y $i &>> $logFile
-				printf "%-40s %s" "installed  \n"
+				printf  "installed  \n"
 			fi
 		done
 		
@@ -180,9 +194,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s" "preparing to install $i "
+				printf "%-40s %s\n" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf "%-40s %s" "installed  \n"
+				printf  "installed\n"
 			fi
 		done
 	}
@@ -310,38 +324,69 @@ if [[ $EUID == "0" ]];then
 					*)  help; exit 1 ;;
 				esac
 			done
-					printf "\nsetting up general user\n"
-						set_general_user
-					printf "\nsetting up general user is complete\n"
-					sleep 1
-					printf "setting up working environment\n"
-						set_working_env
-					printf "\nsetting up working environment is complete\n"
-					sleep 1
-					printf "\nsetting up bash completion\n"
-						set_bash_completion
-					printf "\nsetting up bash completion complete\n"
-					sleep 1
-					printf "\nsetting up repository"
-						insert_repo $REPONAME
-					printf "\nsetting up repository complete"
-					sleep 1 
-					
-					if net_check;then
-						set_working_env
-						sys_stat
-						sys_upgrade_check
-						sys_stat
-						repo_certs
-						sys_stat
-						multi_pac_install
-						sys_stat
-						set_docker_ce
-						sys_stat
-						jBase_install
-						sys_stat
-					fi
+				if [ -z $i -o -z $I  ] && [ -z $p -o -z $P ] && [ -z $u -o -z $U ];then
+					printf "$cursor\n"
+						help
+					printf "\n$cursor"
+				else
+						printf "$cursor"
+						printf "\nsetting up general user\n"
+						printf "$cursor"
+
+							set_general_user
+						printf "$cursor"
+						printf "\nsetting up general user is complete\n"
+						printf "$cursor"
+
+						sleep 1
+
+						printf "$cursor"
+						printf "\nsetting up working environment\n"
+						printf "$cursor"
+							set_working_env
+						printf "$cursor"
+						printf "\nsetting up working environment is complete\n"
+						printf "$cursor"
+
+						sleep 1
+
+						printf "$cursor"
+						printf "\nsetting up bash completion\n"
+						printf "$cursor"
+							set_bash_completion
+						printf "$cursor"
+						printf "\nsetting up bash completion complete\n"
+						printf "$cursor"
+
+						sleep 1
+						printf "$cursor"
+						printf "\nsetting up repository\n"
+						printf "$cursor"
+							insert_repo $REPONAME
+						printf "$cursor"					
+						printf "\nsetting up repository complete\n"
+						printf "$cursor"
+
+						sleep 1 
+						
+						if net_check;then
+							set_working_env
+							sys_stat
+							sys_upgrade_check
+							sys_stat
+							repo_certs
+							sys_stat
+							multi_pac_install
+							sys_stat
+							set_docker_ce
+							sys_stat
+							jBase_install
+							sys_stat
+						fi
+				fi
 else
-	printf "\nPlease get root privileges\n";exit 1;
-			
+	printf "$cursor\n"
+	printf "Please get root privileges"
+	exit 1;
+	printf "\n$cursor"
 fi
