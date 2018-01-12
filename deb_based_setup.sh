@@ -12,8 +12,8 @@
 logFolder="/tmp"
 log="install_log.txt"
 logFile="$logFile/$log"
-line="\n==============================================================\n"
-cursor="\n###############################################################\n"
+line="\n\n==============================================================\n\n"
+cursor="\n\n###############################################################\n\n"
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -142,39 +142,39 @@ cd $HOME
 
 
 multi_pac_install(){
-	printf "\n$line\n"
+	printf "$line"
 	printf "installing DEV packages"
-	printf "\n$line\n\n"
+	printf "$line"
 	for i in "${dev_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "\npreparing to install $i "
-				apt-get install -y $i &>> $logFile
+				printf "%-40s %s\t"  "preparing to install $i "
+				apt-get install -y $i &>> $logFile;sleep 0.2
 				printf "installed  "
 			fi
 		done
 		
-	printf "\n$line\n"
+	printf "$line"
 	printf "installing FRMWARE packages"
-	printf "\n$line\n\n"
+	printf "$line"
 	for i in "${firmware_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "\npreparing to install $i "
-					apt-get install -y $i &>> $logFile
-				printf  "\tinstalled  \n"
+				printf "%-40s %s\t" "preparing to install $i "
+					apt-get install -y $i &>> $logFile;sleep 0.2
+				printf  ".....installed"
 			fi
 		done
 		
-	printf "\n$line\n"
+	printf "$line"
 	printf " installing GUI packages"
-	printf "\n$line\n\n"
+	printf "$line"
 
 	for i in "${gui_packages[@]}";
 		do
@@ -182,8 +182,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "\npreparing to install $i $(apt-get install -y $i &>> $logFile)"
-				printf  "\t.....installed  "
+				printf "%-40s %s\t" "preparing to install $i"
+				 apt-get install -y $i &>> $logFile;sleep 0.2
+				printf  ".....installed  "
 			fi
 		done
 		
@@ -197,7 +198,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-40s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile
+					apt-get install -y $i &>> $logFile;sleep 0.2
 				printf  "\tinstalled\n"
 			fi
 		done
