@@ -14,6 +14,7 @@ log="install_log.txt"
 logFile="$logFile/$log"
 line="\n\n==============================================================\n\n"
 cursor="\n\n###############################################################\n\n"
+curl_flag=0
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -31,10 +32,10 @@ PLANK_APP=
 INSTALLER="apt-get"
 export DEBIAN_FRONTEND=noninteractive
 
-dev_packages=("python-scapy" "python-pip" "python-networkx" "python-netaddr" "python-netifaces" "python-netfilter" "apt-transport-https" "ca-certificates" "curl" "gnupg2" "software-properties-common" "python-gnuplot" "python-mako" "python-radix" "ipython" "ipython3" "python-pycurl" "python-lxml" "python-nmap" "python-flask" "python-scrapy" "perl-modules" "build-essential" "cmake" "bison" "flex" "git"  )
-firmware_packages=( "firmware-misc-nonfree"  "firmware-atheros" " firmware-brcm80211" "firmware-samsung" " firmware-realtek" "firmware-linux" " firmware-linux-free" " firmware-linux-nonfree" " intel-microcode" "firmware-zd1211" )
-gui_packages=("lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "bash-completion" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
-lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-dev" " libltdl3-dev" " libncurses-dev" " libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev" "libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool" " libsqlite3-dev" " libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev" "libstdc++6-4.9-dbg")
+dev_packages=( "python-scapy" "python-pip" "python-networkx" "python-netaddr" "python-netifaces" "python-netfilter" "apt-transport-https" "ca-certificates" "curl" "gnupg2" "software-properties-common" "python-gnuplot" "python-mako" "python-radix" "ipython" "ipython3" "python-pycurl" "python-lxml" "python-nmap" "python-flask" "python-scrapy" "perl-modules" "build-essential" "cmake" "bison" "flex" "git"  )
+firmware_packages=( "firmware-misc-nonfree"  "firmware-atheros" "firmware-brcm80211" "firmware-samsung" " firmware-realtek" "firmware-linux" "firmware-linux-free" "firmware-linux-nonfree" "intel-microcode" "firmware-zd1211" )
+gui_packages=( "lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "bash-completion" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
+lib_packages=( "libpoe-component-pcap-perl" "libnet-pcap-perllibgtk2.0-dev" "libltdl3-dev" "libncurses-dev" "libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev" "libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool" "libsqlite3-dev" " libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev" "libstdc++6-4.9-dbg")
 
 
 ###Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -94,6 +95,7 @@ sys_stat(){
 			fi
 		done
 	}
+
 net_check(){
 	net_stat=$(ping -c 1 vk.com > $NULL 2> $NULL ;printf "$?\n")
 			if [ $net_stat == "1" ] || [ $net_stat == "2" ];then
@@ -102,23 +104,23 @@ net_check(){
 				printf "$line"				
 				return 1
 			elif [ $net_stat == "0" ];then
-				printf "$line\n"
+				printf "$line"
 					printf "Network is UP"
-				printf "\n$line"
+				printf "$line"
 
 					sleep 2
-				printf "\n$line\n"
+				printf "$line"
 					printf "starting app install";
-				printf "\n$line"
+				printf "$line"
 
 					#insertRepo $REPONAME
-				printf "\n$line\n"
+				printf "$line"
 					printf "Updating the file cache";
-				printf "\n$line"
+				printf "$line"
 					apt-get update &>> $logFile 
-				printf "\n$line\n"
+				printf "$line"
 					printf "finished updating repo cache"
-				printf "\n$line"
+				printf "$line"
 					return 0
 			fi
 	}
@@ -136,6 +138,7 @@ else
 	echo $line
 	echo "no curl installed"
 	echo $line
+	curl_flag=1
 fi
 cd $HOME
     }
@@ -289,7 +292,7 @@ jBase_install(){
 	
 	if [ -e GEN_GRUB_CONFIG ];then
 		printf "$line"
-		printf "installing SDKMAN\n"
+		printf "installing SDKMAN"
 		 curl -s "https://get.sdkman.io" | bash  &> $logFile
 		printf "$line"
 	fi
@@ -297,15 +300,16 @@ jBase_install(){
 
 set_docker_ce(){
 	
-	add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
-	
-	apt-get install docker-ce -y
-	
-	sleep 1 
-	
-	systemctl restart docker
-	
-	return 0;
+	if [ $curl_flag == 0 ];then
+		add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
+		apt-get install docker-ce -y &> $logFile
+		sleep 1 
+		systemctl restart docker
+		
+	else
+		true
+		
+	fi
 	}
 
 ###
@@ -382,9 +386,9 @@ if [[ $EUID == "0" ]];then
 							sys_stat
 							multi_pac_install
 							sys_stat
-							set_docker_ce
-							sys_stat
 							jBase_install
+							sys_stat
+							set_docker_ce
 							sys_stat
 						fi
 #				fi
