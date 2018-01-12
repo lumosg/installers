@@ -62,7 +62,7 @@ deb ftp://ftp.$REPONAME.org/$REPONAME stable main contrib non-free\n
 deb http://http.$REPONAME.net/$REPONAME $KODENAME-backports main\n
 deb http://ftp.$REPONAME.org/$REPONAME/ $KODENAME-backports non-free contrib\n
 	" > /etc/apt/sources.list
-	printf "\ndeb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Debian_7.0/ /\n" >> /etc/apt/sources.list
+	printf "\ndeb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Debian_9.0/ /\n" >> /etc/apt/sources.list
 	printf "\ndeb http://download.virtualbox.org/virtualbox/debian $KODENAME contrib\n" >> /etc/apt/sources.list
 	;;
 			*) printf "Error getting Repo\n";exit 1 ;;
@@ -107,16 +107,16 @@ net_check(){
 				printf "\n$line"
 
 					sleep 2
-				printf "$line\n"
+				printf "\n$line\n"
 					printf "starting app install";
 				printf "\n$line"
 
 					#insertRepo $REPONAME
-				printf "$line\n"
+				printf "\n$line\n"
 					printf "Updating the file cache";
 				printf "\n$line"
 					apt-get update &>> $logFile 
-				printf "$line\n"
+				printf "\n$line\n"
 					printf "finished updating repo cache"
 				printf "\n$line"
 					return 0
@@ -130,7 +130,7 @@ wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O-  &> $NULL|  apt-
 wget -q  http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Debian_7.0/Release.key -O-  |apt-key add - &> $NULL;
 
 
-if [ -e $(which curl) ];then
+if [ -e /usr/bin/curl ];then
 	curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - &> $NULL;
 else
 	echo $line
@@ -286,8 +286,8 @@ set_up_plank(){
 '
 jBase_install(){
 	
-	if [ -e $(which curl) ];then
-		printf "$line\n"
+	if [ -e GEN_GRUB_CONFIG ];then
+		printf "\n$line\n"
 		printf "installing SDKMAN\n"
 		 curl -s "https://get.sdkman.io" | bash  &> $logFile
 		printf "$line\n"
