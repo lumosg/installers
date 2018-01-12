@@ -142,7 +142,7 @@ cd $HOME
 
 
 multi_pac_install(){
-	printf "$line\n"
+	printf "\n$line\n"
 	printf "installing DEV packages"
 	printf "\n$line"
 	for i in "${dev_packages[@]}";
@@ -151,11 +151,13 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\n" "preparing to install $i $(apt-get install -y $i &>> $logFile)"  "installed  "
+				printf "%-40s %s\t" "preparing to install $i "
+				apt-get install -y $i &>> $logFile) 
+				printf "installed  "
 			fi
 		done
 		
-	printf "$line\n"
+	printf "\n$line\n"
 	printf "installing FRMWARE packages"
 	printf "\n$line"
 	for i in "${firmware_packages[@]}";
@@ -164,13 +166,13 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\n" "preparing to install $i "
+				printf "%-40s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf  "installed  \n"
+				printf  "\tinstalled  \n"
 			fi
 		done
 		
-	printf "$line\n"
+	printf "\n$line\n"
 	printf " installing GUI packages"
 	printf "\n$line"
 
@@ -185,7 +187,7 @@ multi_pac_install(){
 			fi
 		done
 		
-	printf "$line\n"
+	printf "\n$line\n"
 	printf " installing LIB packages"
 	printf "\n$line"
 	for i in "${lib_packages[@]}";
@@ -194,9 +196,9 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\n" "preparing to install $i "
+				printf "%-40s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile
-				printf  "installed\n"
+				printf  "\tinstalled\n"
 			fi
 		done
 	}
@@ -257,7 +259,7 @@ set_working_env(){ #user env setup
                                 true
                             else
                                 printf 'GRUB_BACKGROUND="/usr/share/backgrounds/cosmos/comet.jpg"\n' >> $GRUB_DEFAULT_CONFIG;
-                                    grub2-mkconfig -o $GEN_GRUB_CONFIG
+                                    grub-mkconfig -o $GEN_GRUB_CONFIG
                             fi
 	    }
 : '
