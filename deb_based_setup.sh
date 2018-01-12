@@ -8,6 +8,7 @@
 #TODO: write a function that follows the stages of script and lets the use know whats going on.
 #TODO: add function that upgrades system if such is needed.
 #TODO: make repository deployment more general and save for each distro.
+#TODO: validate curl in install function as well so you can proceed with docker and other function.
 ###Vars ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 logFolder="/tmp"
 log="install_log.txt"
