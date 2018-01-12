@@ -12,8 +12,8 @@
 logFolder="/tmp"
 log="install_log.txt"
 logFile="$logFile/$log"
-line="=============================================================="
-cursor="###############################################################"
+line="\n==============================================================\n"
+cursor="\n###############################################################\n"
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -144,29 +144,29 @@ cd $HOME
 multi_pac_install(){
 	printf "\n$line\n"
 	printf "installing DEV packages"
-	printf "\n$line"
+	printf "\n$line\n\n"
 	for i in "${dev_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i "
-				apt-get install -y $i &>> $logFile) 
+				printf "%-40s %s\t" "\npreparing to install $i "
+				apt-get install -y $i &>> $logFile
 				printf "installed  "
 			fi
 		done
 		
 	printf "\n$line\n"
 	printf "installing FRMWARE packages"
-	printf "\n$line"
+	printf "\n$line\n\n"
 	for i in "${firmware_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i "
+				printf "%-40s %s\t" "\npreparing to install $i "
 					apt-get install -y $i &>> $logFile
 				printf  "\tinstalled  \n"
 			fi
@@ -174,7 +174,7 @@ multi_pac_install(){
 		
 	printf "\n$line\n"
 	printf " installing GUI packages"
-	printf "\n$line"
+	printf "\n$line\n\n"
 
 	for i in "${gui_packages[@]}";
 		do
@@ -182,14 +182,14 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i $(apt-get install -y $i &>> $logFile)"
+				printf "%-40s %s\t" "\npreparing to install $i $(apt-get install -y $i &>> $logFile)"
 				printf  "\t.....installed  "
 			fi
 		done
 		
 	printf "\n$line\n"
 	printf " installing LIB packages"
-	printf "\n$line"
+	printf "\n$line\n\n"
 	for i in "${lib_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
@@ -206,9 +206,9 @@ multi_pac_install(){
 set_general_user(){
         user_chk=$(cat /etc/passwd|grep $USER &> $NULL;printf "$?\n")
       if [ $USER == "" ];then
-			printf "$line/n"
+			printf "\n$line\n"
             printf " no username provided to create"
-            printf "\n$line"
+            printf "\n$line\n"
       else
             if [ "$user_chk" == "0" ];then
 				printf "$line\n"
