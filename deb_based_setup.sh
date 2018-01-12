@@ -180,9 +180,8 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\n" "preparing to install $i"
-					apt-get install -y $i &>> $logFile
-				printf  "installed  \n"
+				printf "%-40s %s\t" "preparing to install $i $(apt-get install -y $i &>> $logFile)"
+				printf  "\t.....installed  "
 			fi
 		done
 		
