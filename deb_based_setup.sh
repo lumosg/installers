@@ -40,9 +40,9 @@ lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-d
 ###Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
 help(){
-	printf "$line\n"
+	printf "$line"
 	printf "usage : $0 -I apt-get -U username -P password"
-	printf "\n$line"
+	printf "$line"
 	exit 1
 }
 
@@ -86,8 +86,8 @@ sys_stat(){
 
 	while true;
 		do
-			if [ $pac_stat == "0" ];then
-				printf "processing apt-get \n"
+			if [ "$pac_stat" == "0" ];then
+				printf "."
 				sleep 5
 			else
 				break
@@ -97,9 +97,9 @@ sys_stat(){
 net_check(){
 	net_stat=$(ping -c 1 vk.com > $NULL 2> $NULL ;printf "$?\n")
 			if [ $net_stat == "1" ] || [ $net_stat == "2" ];then
-				printf "$line\n"
+				printf "$line"
 				printf "NO NETWORK - Get Online"
-				printf "\n$line"				
+				printf "$line"				
 				return 1
 			elif [ $net_stat == "0" ];then
 				printf "$line\n"
@@ -151,7 +151,7 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t"  "preparing to install $i "
+				printf "%-50s %s\t"  "preparing to install $i "
 				apt-get install -y $i &>> $logFile;sleep 0.2
 				printf "installed\n"
 			fi
@@ -166,7 +166,7 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i "
+				printf "%-50s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile;sleep 0.2
 				printf  ".....installed\n"
 			fi
@@ -182,22 +182,22 @@ multi_pac_install(){
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i"
+				printf "%-50s %s\t" "preparing to install $i"
 				 apt-get install -y $i &>> $logFile;sleep 0.2
 				printf  ".....installed\n"
 			fi
 		done
 		
-	printf "\n$line\n"
+	printf "$line"
 	printf " installing LIB packages"
-	printf "\n$line\n\n"
+	printf "$line"
 	for i in "${lib_packages[@]}";
 		do
 			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
-				printf "%-40s %s\t" "preparing to install $i "
+				printf "%-50s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile;sleep 0.2
 				printf  ".....installed\n"
 			fi
@@ -207,14 +207,14 @@ multi_pac_install(){
 set_general_user(){
         user_chk=$(cat /etc/passwd|grep $USER &> $NULL;printf "$?\n")
       if [ $USER == "" ];then
-			printf "\n$line\n"
+			printf "$line"
             printf " no username provided to create"
-            printf "\n$line\n"
+            printf "$line"
       else
             if [ "$user_chk" == "0" ];then
-				printf "$line\n"
+				printf "$line"
                 printf "$USER already exists";true
-				printf "\n$line"
+				printf "$line"
             elif [ "$user_chk" != "0" ];then
                     useradd -m -p $(mkpasswd "$PASSWD") -s /bin/bash -G adm,sudo,www-data,root $USER
             fi
@@ -288,10 +288,10 @@ set_up_plank(){
 jBase_install(){
 	
 	if [ -e GEN_GRUB_CONFIG ];then
-		printf "\n$line\n"
+		printf "$line"
 		printf "installing SDKMAN\n"
 		 curl -s "https://get.sdkman.io" | bash  &> $logFile
-		printf "$line\n"
+		printf "$line"
 	fi
 }
 
@@ -333,43 +333,43 @@ if [[ $EUID == "0" ]];then
 #						help
 #					printf "\n$cursor"
 #				else
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up general user"
-						printf "\n$cursor"
+						printf "$cursor"
 
 							set_general_user
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up general user is COMPLETE"
-						printf "\n$cursor"
+						printf "$cursor"
 
 						sleep 1
 
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up working environment"
-						printf "\n$cursor"
+						printf "$cursor"
 							set_working_env
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up working environment is COMPLETE"
-						printf "\n$cursor"
+						printf "$cursor"
 
 						sleep 1
 
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up bash completion"
-						printf "\n$cursor"
+						printf "$cursor"
 							set_bash_completion
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up bash completion COMPLETE"
-						printf "\n$cursor"
+						printf "$cursor"
 
 						sleep 1
-						printf "$cursor\n"
+						printf "$cursor"
 						printf "setting up repository"
-						printf "\n$cursor"
+						printf "$cursor"
 							insert_repo $REPONAME
-						printf "$cursor\n"					
+						printf "$cursor"					
 						printf "setting up repository COMPLETE"
-						printf "\n$cursor"
+						printf "$cursor"
 
 						sleep 1 
 						
@@ -389,8 +389,8 @@ if [[ $EUID == "0" ]];then
 						fi
 #				fi
 else
-	printf "$cursor\n"
+	printf "$cursor"
 		printf "Please get root privileges"
-	printf "\n$cursor"
+	printf "$cursor"
 	exit 1;
 fi
