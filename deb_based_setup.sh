@@ -33,7 +33,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 dev_packages=("python-scapy" " python-pip" " python-networkx " "python-netaddr " " python-netifaces" " python-netfilter " " apt-transport-https" " ca-certificates " "curl " "gnupg2 " "software-properties-common" " " "python-gnuplot " " python-mako " "python-radix " "ipython " " ipython3 " "python-pycurl " " python-lxml" "python-nmap " " python-flask" " python-scrapy" " perl-modules" " build-essential" " cmake" " bison " " flex" " git"  )
 firmware_packages=( "firmware-misc-nonfree"  "firmware-atheros" " firmware-brcm80211" "firmware-samsung" " firmware-realtek" "firmware-linux" " firmware-linux-free" " firmware-linux-nonfree" " intel-microcode" "firmware-zd1211" )
-gui_packages=("lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
+gui_packages=("lightdm" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "bash-completion" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme")
 lib_packages=( "curl" "libpoe-component-pcap-perl" " libnet-pcap-perllibgtk2.0-dev" " libltdl3-dev" " libncurses-dev" " libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev" "libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool" " libsqlite3-dev" " libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev" "libstdc++6-4.9-dbg")
 
 
@@ -73,7 +73,7 @@ deb http://ftp.$REPONAME.org/$REPONAME/ $KODENAME-backports non-free contrib\n
 sys_upgrade_check(){
 	current_distro=$(cat /etc/*-release|grep "^ID"|grep -E -o "[a-z]w+")
 		if [ "$current_distro" == "debian" ];then
-			apt-get update && apt-get upgrade &>> $logFile
+			apt-get update  &>> $logFile && apt-get upgrade &>> $logFile
 		fi
 		if [ "$current_distro" == "redhat" ];then
 			yum update -y
@@ -112,7 +112,10 @@ net_check(){
 				printf "\n$line"
 
 					#insertRepo $REPONAME
-					apt-get update
+				printf "$line\n"
+					printf "Updating the file cache";
+				printf "\n$line"
+					apt-get update &>> $logFile 
 				printf "$line\n"
 					printf "finished updating repo cache"
 				printf "\n$line"
@@ -127,7 +130,7 @@ wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O-  &> $NULL|  apt-
 wget -q  http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Debian_7.0/Release.key -O-  |apt-key add - &> $NULL;
 
 
-if [ which curl ];then
+if [ -e $(which curl) ];then
 	curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - &> $NULL;
 else
 	echo $line
@@ -234,7 +237,8 @@ set_bash_completion(){
 }
 
 set_working_env(){ #user env setup
-	  sed -i s/PS1/#PS1/ /etc/bash.bashrc &>> $logFile
+	  printf "sed -i 's/PS1/#PS1/g' /etc/bash.bashrc\n" &>> $logFile
+			sed -i 's/PS1/#PS1/g' /etc/bash.bashrc
           printf "alias l=ls; alias ll='ls -l'; alias la='ls -la';alias lh='ls -lh' \n
                   alias more=less; alias vi=vim; alias cl=clear; alias mv='mv -v'; alias cp='cp -v'; \n
                   alias log='cd /var/log'; alias drop_caches='echo 3 > /proc/sys/vm/drop_caches'; \n
