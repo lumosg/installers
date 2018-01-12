@@ -49,7 +49,7 @@ help(){
 insert_repo(){
 		op=$1
 		case $op in
-	    $REPONAME)printf "inserting repo";	printf "
+	    $REPONAME)printf "\nInserting Repo\n";	printf "
 ##MAIN
 deb http://http.$REPONAME.net/$REPONAME $KODENAME main\n
 deb-src http://http.$REPONAME.net/$REPONAME $KODENAME main\n
@@ -257,7 +257,7 @@ set_working_env(){ #user env setup
                                 true
                             else
                                 printf 'GRUB_BACKGROUND="/usr/share/backgrounds/cosmos/comet.jpg"\n' >> $GRUB_DEFAULT_CONFIG;
-                                    grub2-mkconfig -o $GRUB_CONFIG
+                                    grub2-mkconfig -o $GEN_GRUB_CONFIG
                             fi
 	    }
 : '
@@ -330,43 +330,43 @@ if [[ $EUID == "0" ]];then
 #						help
 #					printf "\n$cursor"
 #				else
-						printf "$cursor"
-						printf "\nsetting up general user\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up general user"
+						printf "\n$cursor"
 
 							set_general_user
-						printf "$cursor"
-						printf "\nsetting up general user is complete\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up general user is COMPLETE"
+						printf "\n$cursor"
 
 						sleep 1
 
-						printf "$cursor"
-						printf "\nsetting up working environment\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up working environment"
+						printf "\n$cursor"
 							set_working_env
-						printf "$cursor"
-						printf "\nsetting up working environment is complete\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up working environment is COMPLETE"
+						printf "\n$cursor"
 
 						sleep 1
 
-						printf "$cursor"
-						printf "\nsetting up bash completion\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up bash completion"
+						printf "\n$cursor"
 							set_bash_completion
-						printf "$cursor"
-						printf "\nsetting up bash completion complete\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up bash completion COMPLETE"
+						printf "\n$cursor"
 
 						sleep 1
-						printf "$cursor"
-						printf "\nsetting up repository\n"
-						printf "$cursor"
+						printf "$cursor\n"
+						printf "setting up repository"
+						printf "\n$cursor"
 							insert_repo $REPONAME
-						printf "$cursor"					
-						printf "\nsetting up repository complete\n"
-						printf "$cursor"
+						printf "$cursor\n"					
+						printf "setting up repository COMPLETE"
+						printf "\n$cursor"
 
 						sleep 1 
 						
