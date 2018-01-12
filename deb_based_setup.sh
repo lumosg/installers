@@ -153,7 +153,7 @@ multi_pac_install(){
 			else
 				printf "%-40s %s\t"  "preparing to install $i "
 				apt-get install -y $i &>> $logFile;sleep 0.2
-				printf "installed  "
+				printf "installed\n"
 			fi
 		done
 		
@@ -168,7 +168,7 @@ multi_pac_install(){
 			else
 				printf "%-40s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile;sleep 0.2
-				printf  ".....installed"
+				printf  ".....installed\n"
 			fi
 		done
 		
@@ -184,7 +184,7 @@ multi_pac_install(){
 			else
 				printf "%-40s %s\t" "preparing to install $i"
 				 apt-get install -y $i &>> $logFile;sleep 0.2
-				printf  ".....installed  "
+				printf  ".....installed\n"
 			fi
 		done
 		
@@ -199,7 +199,7 @@ multi_pac_install(){
 			else
 				printf "%-40s %s\t" "preparing to install $i "
 					apt-get install -y $i &>> $logFile;sleep 0.2
-				printf  "\tinstalled\n"
+				printf  ".....installed\n"
 			fi
 		done
 	}
