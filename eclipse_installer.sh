@@ -10,6 +10,8 @@
 HOME=$(pwd)
 INST_DIR="/opt"
 TMP="/tmp"
+CURSOR="\n\n####################################################################################\n\n"
+LINE="\n\n====================================================================================\n\n"
 LINK="http://eclipse.bluemix.net/packages/neon.3/data/eclipse-jee-neon-3-linux-gtk-x86_64.tar.gz"
 FILE="eclipse.tar.gz"
 NAME="eclipse"
@@ -17,38 +19,19 @@ NAME="eclipse"
 ###Functions
 net_check(){
 	cmd=$(ping -c 1 vk.com &> /dev/null; echo $?)
-		if  (($cmd == 0 ));then
-			printf "\nNetwork Up\n"
+		if  (($cmd==0));then
+			printf $CURSOR
+				printf "Network Up"
+			printf $CURSOR
+
 		else
-			printf "\nNetwork Down, exiting...\n";exit
+			printf $CURSOR			
+				printf "Network Down, exiting..."
+			printf $CURSOR
+			exit 1
 		fi
 }
 
-get_eclipse(){
-	if [ -x /usr/bin/curl ];then
-		download_progress
-		cd $TMP && { curl -O $LINK ; cd -; }
-		download_progress
-		if [ -e $TMP/$FILE ];then
-			
-			tar xvzf $TMP/$FILE -C $INST_DIR
-		else
-			printf "\n Something went wrong\n";exit 1;
-		fi
-	elif [ -x /usr/bin/wget ];then
-		download_progress
-		wget  $LINK  -O $TMP/$FILE &> /dev/null
-		download_progress
-		if [ -e $TMP/$FILE ];then
-			tar xvzf $TMP/$FILE -C $INST_DIR
-		else
-			printf "\n Something went wrong\n";exit 1;
-		fi
-		
-	else
-		printf "\n no available tool to download the file\n"
-	fi
-}
 
 download_progress(){
 	local spin='|/-\'
@@ -64,7 +47,40 @@ download_progress(){
 		done
 		printf "   \b\b\b"
 	}
-eclipse_setup(){
+	
+get_eclipse(){
+	if [ -x /usr/bin/curl ];then
+		download_progress
+		cd $TMP && { curl -O $LINK ; cd -; }
+		download_progress
+		if [ -e $TMP/$FILE ];then
+			tar xvzf $TMP/$FILE -C $INST_DIR
+		else
+			printf "\n Something went wrong\n";exit 1;
+		fi
+	elif [ -x /usr/bin/wget ];then
+		download_progress
+		wget  $LINK  -O $TMP/$FILE &> /dev/null
+		download_progress
+		if [ -e $TMP/$FILE ];then
+			tar xvzf $TMP/$FILE -C $INST_DIR
+		else
+			printf $CURSOR
+				printf "Something went wrong"
+			printf $CURSOR
+			exit 1;
+		fi
+		
+	else
+		printf $CURSOR
+			printf " no available tool to download the file\n"
+		printf $CURSOR			
+		exit 1;
+	fi
+}
+
+
+eclipse_gui_setup(){
 
 cat <<EOF >> /usr/share/applications/$NAME.desktop
 	[Desktop Entry]
@@ -78,10 +94,14 @@ cat <<EOF >> /usr/share/applications/$NAME.desktop
 	StartupNotify=true
 EOF
 
+}
+
+eclipse_bin_setup(){
 cat << EOF >> /usr/bin/$NAME
 	#!/usr/bin/env bash
-	BIN="/opt/eclipse"
-	$BIN/eclipse "$*"
+
+		BIN="/opt/eclipse"
+		$BIN/eclipse "$*"
 
 EOF
 
