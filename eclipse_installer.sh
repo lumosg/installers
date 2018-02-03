@@ -15,6 +15,8 @@ LINE="\n\n======================================================================
 LINK="http://eclipse.bluemix.net/packages/neon.3/data/eclipse-jee-neon-3-linux-gtk-x86_64.tar.gz"
 FILE="eclipse.tar.gz"
 NAME="eclipse"
+logfile="eclipse_install.log"
+logFile="$TMP/$logfile"
 #downloader="wget"
 ###Functions
 net_check(){
@@ -62,14 +64,14 @@ get_eclipse(){
 		download_progress
 		wget  $LINK  -O $TMP/$FILE &> /dev/null
 		download_progress
-		if [ -e $TMP/$FILE ];then
-			tar xvzf $TMP/$FILE -C $INST_DIR
-		else
-			printf $CURSOR
-				printf "Something went wrong"
-			printf $CURSOR
-			exit 1;
-		fi
+		#if [ -e $TMP/$FILE ];then
+	#		tar xvzf $TMP/$FILE -C $INST_DIR
+#		else
+#			printf $CURSOR
+#				printf "Something went wrong"
+#			printf $CURSOR
+#			exit 1;
+#		fi
 		
 	else
 		printf $CURSOR
@@ -81,8 +83,16 @@ get_eclipse(){
 
 
 eclipse_gui_setup(){
+if [[ -e $TMP/$FILE ]];then
+	cd $TMP
+		download_progress
+		tar xvzf $FILE -C $INST_DIR &> $logFile
+		download_progress
+fi
 
-cat <<EOF >> /usr/share/applications/$NAME.desktop
+if [[ ! -e /usr/share/applications/$NAME.desktop ]];then
+
+cat <<EOF > /usr/share/applications/$NAME.desktop
 	[Desktop Entry]
 	Type=Application
 	Version=
@@ -93,11 +103,11 @@ cat <<EOF >> /usr/share/applications/$NAME.desktop
 	Categories=GTK;Development;IDE;
 	StartupNotify=true
 EOF
-
+fi 
 }
 
 eclipse_bin_setup(){
-cat << EOF >> /usr/bin/$NAME
+cat << EOF > /usr/bin/$NAME
 	#!/usr/bin/env bash
 
 		BIN="/opt/eclipse"
@@ -133,5 +143,7 @@ permission_setup(){
 		eclipse_setup;permission_setup
 	else
 		clear
+		printf "$CURSOR"
 		printf "\n Please run with root\n" 
+		printf "$CURSOR"
 	fi
