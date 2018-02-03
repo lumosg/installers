@@ -107,15 +107,23 @@ fi
 }
 
 eclipse_bin_setup(){
-cat << EOF > /usr/bin/$NAME
-	#!/usr/bin/env bash
+	if [[ ! -e /usr/bin/$NAME ]];then
+		cat << EOF > /usr/bin/$NAME
+			#!/usr/bin/env bash
 
-		BIN="/opt/eclipse"
-		$BIN/eclipse "$*"
+				BIN="/opt/eclipse"
+				$BIN/eclipse "$*"
 
 EOF
 
-chmod +x /usr/bin/$NAME	
+		chmod +x /usr/bin/$NAME	
+	
+	
+	elif [[ -e /usr/bin/$NAME ]];then
+		chmod +x /usr/bin/$NAME	
+
+	fi
+
 }
 
 permission_setup(){
