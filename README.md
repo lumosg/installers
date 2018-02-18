@@ -1,1 +1,1 @@
-#general tool installers  for debian(for now) tools.
+#General tool installers  for Debian and Debian based systems(for now).
