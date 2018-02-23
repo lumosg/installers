@@ -18,7 +18,7 @@ log="install_log.txt"
 logFile="$logFile/$log"
 line="\n\n==============================================================\n\n"
 cursor="\n\n###############################################################\n\n"
-curl_flag=0
+#curl_flag=0
 REPONAME="$(lsb_release -si|awk {'print tolower ($0)'})"
 REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
@@ -88,7 +88,7 @@ sys_upgrade_check(){
 
 sys_stat(){
 
-	pac_stat=$(ps aux |grep -v grep |grep apt-get &> /dev/null ;echo $?)
+	pac_stat=$(ps aux |grep -v grep |grep $INSTALLER &> /dev/null ;echo $?)
 
 	while true;
 		do
@@ -295,10 +295,15 @@ set_up_plank(){
 '
 jBase_install(){
 	
-	if [ -e GEN_GRUB_CONFIG ];then
+	if [ $(which curl) ];then
 		printf "$line"
 		printf "installing SDKMAN"
 		 curl -s "https://get.sdkman.io" | bash  &> $logFile
+		printf "$line"
+	else
+		printf "$line"
+			printf "curl not installed"
+			sleep $TIME
 		printf "$line"
 	fi
 }
@@ -383,10 +388,10 @@ if [[ $EUID == "0" ]];then
 						sleep $TIME
 						
 						if net_check;then
-							set_working_env
+					#		set_working_env # is used twice
 					#		sys_stat
-							sys_upgrade_check
-					#		sys_stat
+							sys_upgrade_check &
+							sys_stat # should be printed while previous function is running
 							repo_certs
 					#		sys_stat
 							multi_pac_install
