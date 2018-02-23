@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
-
+########################################################################
 #Author  : br0k3ngl255
 #Date    : 27.08.3017
 #Purpose : setup systems features on debian based systems.
 #Version : 3.2.18
-
+########################################################################
 #TODO: write a function that follows the stages of script and lets the use know whats going on.
 #TODO: add function that upgrades system if such is needed.
 #TODO: make repository deployment more general and save for each distro.
 #TODO: validate curl in install function as well so you can proceed with docker and other function.
-#TOFO: configure the MATE environment file.
+#TODO: configure the MATE environment file.
+#TODO:	sys_stat function does not works in production.
+########################################################################
 ###Vars ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 logFolder="/tmp"
 log="install_log.txt"
@@ -22,6 +24,7 @@ REPONAME_BETA=
 KODENAME="$(lsb_release -sc)"
 PASSWD="1"
 USER="mobius"
+TIME=0.5
 BASHRC="/etc/bash.bashrc"
 RBASHRC="/etc/bashrc"
 NULL="/dev/null"
@@ -91,7 +94,7 @@ sys_stat(){
 		do
 			if [ "$pac_stat" == "0" ];then
 				printf "."
-				sleep 5
+				sleep $TIME
 			else
 				break
 			fi
@@ -110,7 +113,7 @@ net_check(){
 					printf "Network is UP"
 				printf "$line"
 
-					sleep 2
+					sleep $TIME
 				printf "$line"
 					printf "starting app install";
 				printf "$line"
@@ -157,7 +160,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t"  "preparing to install $i "
-				apt-get install -y $i &>> $logFile;sleep 0.2
+				apt-get install -y $i &>> $logFile;sleep $TIME
 				printf "installed\n"
 			fi
 		done
@@ -172,7 +175,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile;sleep 0.2
+					apt-get install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -188,7 +191,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i"
-				 apt-get install -y $i &>> $logFile;sleep 0.2
+				 apt-get install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -203,7 +206,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile;sleep 0.2
+					apt-get install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -305,7 +308,7 @@ set_docker_ce(){
 	if [ $curl_flag == 0 ];then
 		add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
 		apt-get install docker-ce -y &> $logFile
-		sleep 1 
+		sleep $TIME
 		systemctl restart docker
 		
 	else
@@ -348,7 +351,7 @@ if [[ $EUID == "0" ]];then
 						printf "setting up general user is COMPLETE"
 						printf "$cursor"
 
-						sleep 1
+						sleep $TIME
 
 						printf "$cursor"
 						printf "setting up working environment"
@@ -358,7 +361,7 @@ if [[ $EUID == "0" ]];then
 						printf "setting up working environment is COMPLETE"
 						printf "$cursor"
 
-						sleep 1
+						sleep $TIME
 
 						printf "$cursor"
 						printf "setting up bash completion"
@@ -368,7 +371,7 @@ if [[ $EUID == "0" ]];then
 						printf "setting up bash completion COMPLETE"
 						printf "$cursor"
 
-						sleep 1
+						sleep $TIME
 						printf "$cursor"
 						printf "setting up repository"
 						printf "$cursor"
@@ -376,22 +379,22 @@ if [[ $EUID == "0" ]];then
 						printf "$cursor"					
 						printf "setting up repository COMPLETE"
 						printf "$cursor"
-
-						sleep 1 
+						
+						sleep $TIME
 						
 						if net_check;then
 							set_working_env
-							sys_stat
+					#		sys_stat
 							sys_upgrade_check
-							sys_stat
+					#		sys_stat
 							repo_certs
-							sys_stat
+					#		sys_stat
 							multi_pac_install
-							sys_stat
+					#		sys_stat
 							jBase_install
-							sys_stat
+					#		sys_stat
 							set_docker_ce
-							sys_stat
+					#		sys_stat
 						fi
 					printf "$line"
 						printf "FINISHED configuration"
