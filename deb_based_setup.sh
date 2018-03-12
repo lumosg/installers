@@ -161,7 +161,13 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t"  "preparing to install $i "
 				$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf "installed\n"
+
+				if [[ $? != 0 ]];then
+						printf "%-50s %s\t"  "Unable to install $i "
+						printf "NOT installed\n"
+				else 
+						printf "installed\n"
+				fi
 			fi
 		done
 		
@@ -328,7 +334,7 @@ set_docker_ce(){
 	
 	if [ $curl_flag == 0 ];then
 		add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
-		apt-get install docker-ce -y &> $logFile
+		$INSTALLER install docker-ce -y &> $logFile
 		sleep $TIME
 		systemctl restart docker
 		
