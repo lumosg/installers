@@ -79,7 +79,7 @@ deb http://ftp.$REPONAME.org/$REPONAME/ $KODENAME-backports non-free contrib\n
 sys_upgrade_check(){
 	current_distro=$(cat /etc/*-release|grep "^ID"|grep -E -o "[a-z]w+")
 		if [ "$current_distro" == "debian" ];then
-			apt-get update  &>> $logFile && apt-get upgrade &>> $logFile
+			$INSTALLER update  &>> $logFile && $INSTALLER upgrade &>> $logFile
 		fi
 		if [ "$current_distro" == "redhat" ];then
 			yum update -y
@@ -122,7 +122,7 @@ net_check(){
 				printf "$line"
 					printf "Updating the file cache";
 				printf "$line"
-					apt-get update &>> $logFile 
+					$INSTALLER update &>> $logFile 
 				printf "$line"
 					printf "finished updating repo cache"
 				printf "$line"
@@ -160,7 +160,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t"  "preparing to install $i "
-				apt-get install -y $i &>> $logFile;sleep $TIME
+				$INSTALLER install -y $i &>> $logFile;sleep $TIME
 				printf "installed\n"
 			fi
 		done
@@ -175,7 +175,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile;sleep $TIME
+					$INSTALLER install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -191,7 +191,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i"
-				 apt-get install -y $i &>> $logFile;sleep $TIME
+				 $INSTALLER install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -206,7 +206,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile;sleep $TIME
+					$INSTALLER install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done
@@ -222,7 +222,7 @@ multi_pac_install(){
 				true
 			else
 				printf "%-50s %s\t" "preparing to install $i "
-					apt-get install -y $i &>> $logFile;sleep $TIME
+					$INSTALLER install -y $i &>> $logFile;sleep $TIME
 				printf  ".....installed\n"
 			fi
 		done	
