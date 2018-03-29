@@ -3,14 +3,13 @@
 #Author  : br0k3ngl255
 #Date    : 27.08.3017
 #Purpose : setup systems features on debian based systems.
-#Version : 3.2.18
+#Version : 3.3.38
 ########################################################################
-#TODO: write a function that follows the stages of script and lets the use know whats going on.
 #TODO: add function that upgrades system if such is needed.
 #TODO: make repository deployment more general and save for each distro.
-#TODO: validate curl in install function as well so you can proceed with docker and other function.
 #TODO: configure the MATE environment file.
-#TODO:	sys_stat function does not works in production.
+#TODO: sys_stat function does not works in production.
+#TODO: need to start install from firmware first
 ########################################################################
 ###Vars ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 logFolder="/tmp"
