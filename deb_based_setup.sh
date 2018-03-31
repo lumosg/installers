@@ -149,6 +149,37 @@ cd $HOME
 
 
 multi_pac_install(){
+	
+	printf "$line"
+	printf "installing FIRMWARE packages"
+	printf "$line"
+	for i in "${firmware_packages[@]}";
+		do
+			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
+			if [[ "$pac_check" == "0" ]];then
+				true
+			else
+				printf "%-50s %s\t" "preparing to install $i "
+					$INSTALLER install -y $i &>> $logFile;sleep $TIME
+				printf  ".....installed\n"
+			fi
+		done
+	
+	printf "$line"
+	printf " installing LIB packages"
+	printf "$line"
+	for i in "${lib_packages[@]}";
+		do
+			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
+			if [[ "$pac_check" == "0" ]];then
+				true
+			else
+				printf "%-50s %s\t" "preparing to install $i "
+					$INSTALLER install -y $i &>> $logFile;sleep $TIME
+				printf  ".....installed\n"
+			fi
+		done
+	
 	printf "$line"
 	printf "installing DEV packages"
 	printf "$line"
@@ -171,21 +202,6 @@ multi_pac_install(){
 		done
 		
 	printf "$line"
-	printf "installing FRMWARE packages"
-	printf "$line"
-	for i in "${firmware_packages[@]}";
-		do
-			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
-			if [[ "$pac_check" == "0" ]];then
-				true
-			else
-				printf "%-50s %s\t" "preparing to install $i "
-					$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
-			fi
-		done
-		
-	printf "$line"
 	printf " installing GUI packages"
 	printf "$line"
 
@@ -200,22 +216,6 @@ multi_pac_install(){
 				printf  ".....installed\n"
 			fi
 		done
-		
-	printf "$line"
-	printf " installing LIB packages"
-	printf "$line"
-	for i in "${lib_packages[@]}";
-		do
-			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
-			if [[ "$pac_check" == "0" ]];then
-				true
-			else
-				printf "%-50s %s\t" "preparing to install $i "
-					$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
-			fi
-		done
-		
 		
 	printf "$line"
 	printf " installing NET packages"
@@ -392,7 +392,7 @@ if [[ $EUID == "0" ]];then
 						printf "$cursor"
 						printf "setting up bash completion"
 						printf "$cursor"
-							set_bash_completion
+							set_bash_completionhttps://github.com/silent-mobius/installers.git
 						printf "$cursor"
 						printf "setting up bash completion COMPLETE"
 						printf "$cursor"
