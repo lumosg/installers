@@ -62,7 +62,7 @@ deb http://http.$REPONAME.net/$REPONAME $KODENAME-updates main\n
 deb-src http://http.$REPONAME.net/$REPONAME $KODENAME-updates main\n
 deb http://security.$REPONAME.org/ $KODENAME/updates main\n
 deb-src http://security.$REPONAME.org/ $KODENAME/updates main\n
-deb ftp://ftp.$REPONAME.org/$REPONAME stable main contrib non-free\n
+deb http://ftp.$REPONAME.org/$REPONAME stable main contrib non-free\n
 ###BackPort
 deb http://http.$REPONAME.net/$REPONAME $KODENAME-backports main\n
 deb http://ftp.$REPONAME.org/$REPONAME/ $KODENAME-backports non-free contrib\n
