@@ -5,7 +5,7 @@
 #Created by : br0k3ngl255
 #Desc	    : Installing  DHCP and DNS on server
 #Date		: 30.05.2018
-#Version	: 1.0.0
+#Version	: 1.0.32
 ########################################################################
 
 
@@ -82,7 +82,7 @@ net_check(){
 rpm_addon(){
 	printf "$line"
 	printf "adding epel repo for extending use"
-	printf 
+	printf "$line"
 	
 	$installer install epel-release
 	[ $? == "0" ] && continue || error
@@ -104,7 +104,7 @@ pack_install(){
 	
 	for i in "${packages[@]}";
 		do
-			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
+			pac_check=$($sub_installer -l $i &> $logFile;printf "$?\n")
 			if [[ "$pac_check" == "0" ]];then
 				true
 			else
