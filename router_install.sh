@@ -58,6 +58,7 @@ distro_check(){
 			centos)  installer="yum";;
 			*) 		 echo "$Distro is not supported"; exit 1 ;;
 			
+			printf "\nthe $op discro ha been chosen and the install is $installer\n" >> $logFile 
 	esac     
 	}
 
@@ -77,3 +78,45 @@ net_check(){
 	}
 
 
+rpm_addon(){
+	printf "$line"
+	printf "adding epel repo for extending use"
+	printf 
+	
+	$installer install epel-release
+	[ $? == "0" ] && continue || error
+	 
+}
+
+
+pack_install(){
+	printf "$line"
+	printf " starting to install packages"
+	printf "$line"
+	if [ $Distro == "centos" ] || [ $Distro == "redhat"];then
+		packages=${srv_packages[@]}
+	else 
+		packages=${web_packages[@]}
+		
+	fi
+	
+	for i in "${packages[@]}";
+		do
+			pac_check=$(dpkg -l $i &> $logFile;printf "$?\n")
+			if [[ "$pac_check" == "0" ]];then
+				true
+			else
+				printf "%-50s %s\t"  "preparing to install $i "
+				$INSTALLER install -y $i &>> $logFile;sleep $TIME
+
+				if [[ $? != 0 ]];then
+						printf "%-50s %s\t"  "Unable to install $i "
+						printf "NOT installed\n"
+				else 
+						printf "installed\n"
+				fi
+			fi
+		done
+	
+	
+}
