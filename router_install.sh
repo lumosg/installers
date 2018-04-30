@@ -28,8 +28,8 @@ cursor="\n\n###############################################################\n\n"
 BASHRC="/etc/bash.bashrc"
 RBASHRC="/etc/bashrc"
 
-srv_packages=( httpd   php dhcp )
-web_packages=( apache2 php dhcp )
+srv_packages=( httpd   php dhcp figlet )
+web_packages=( apache2 php dhcp figlet )
 
 
 ##Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -95,11 +95,10 @@ pack_install(){
 	printf "starting to install packages"
 	printf "$line"
 	
-	if [ $Distro == "centos" ] || [ $Distro == "redhat"];then
+	if [ $Distro == "centos" ] || [ $Distro == "redhat" ] || [ $Distro == "fedora" ];then
 		packages=${srv_packages[@]}
 	else 
 		packages=${web_packages[@]}
-		
 	fi
 	
 	for i in "${packages[@]}";
