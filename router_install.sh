@@ -20,6 +20,7 @@ log="install.log"
 logFolder="/var/log/"
 logFile="$logFolder/$log"
 installer=""
+sub_installer=""
 NULL="/dev/null"
 user=""
 line="\n\n==============================================================\n\n"
@@ -51,11 +52,11 @@ distro_check(){
 	local op=$1
 	case $op in
 			
-			debian)  installer="apt-get" ;;
-			ubuntu)  installer="apt-get" ;;
-			redhat)  installer="yum" ;;
-			fedora)  installer="dnf" ;;
-			centos)  installer="yum";;
+			debian)  installer="apt-get" ; sub_installer="dpkg";;
+			ubuntu)  installer="apt-get" ; sub_installer="dpkg";;
+			redhat)  installer="yum" ; sub_installer="rpm";;
+			fedora)  installer="dnf" ; sub_installer="rpm";;
+			centos)  installer="yum" ; sub_installer="rpm" ;;
 			*) 		 echo "$Distro is not supported"; exit 1 ;;
 			
 			printf "\nthe $op discro ha been chosen and the install is $installer\n" >> $logFile 
@@ -91,8 +92,9 @@ rpm_addon(){
 
 pack_install(){
 	printf "$line"
-	printf " starting to install packages"
+	printf "starting to install packages"
 	printf "$line"
+	
 	if [ $Distro == "centos" ] || [ $Distro == "redhat"];then
 		packages=${srv_packages[@]}
 	else 
