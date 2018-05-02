@@ -37,8 +37,8 @@ cursor="\n\n###############################################################\n\n"
 BASHRC="/etc/bash.bashrc"
 RBASHRC="/etc/bashrc"
 
-srv_packages=( httpd   php dhcp figlet  nodejs )
-web_packages=( apache2 php dhcp figlet  nodejs )
+srv_packages=( httpd   php dhcp figlet  nodejs bash-completion )
+web_packages=( apache2 php dhcp figlet  nodejs bash-completion )
 
 
 ##Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -186,7 +186,7 @@ user_setup(){
 				useradd -G wheel $user &> $logFile
 				passwd < $password
 			
-			elif [ $Distro == "debian" ] ||[ $Distro == "redhat" ];then
+			elif [ $Distro == "debian" ] || [ $Distro == "redhat" ];then
 			
 			
 				
@@ -195,7 +195,24 @@ user_setup(){
 			fi
 }
 
-
+user_env_setup(){
+	
+	echo " if ! shopt -oq posix; then
+			if [ -f /usr/share/bash-completion/bash_completion ]; then
+				. /usr/share/bash-completion/bash_completion
+			elif [ -f /etc/bash_completion ]; then
+				. /etc/bash_completion
+			fi
+		   fi " >> $BASHRC
+	echo "alias l=ls; alias ll='ls -l'; alias la='ls -la';alias lh='ls -lh' 
+		  alias more=less; alias vi=vim; 
+		  alias cl=clear; alias mv='mv -v'; 
+		  alias cp='cp -v'; 
+		  alias log='cd /var/log';
+		  alias drop_caches='echo 3 > /proc/sys/vm/drop_caches'; 
+          alias ip_forward='echo 1 > /proc/sys/net/ipv4/ip_forward';" >> $BASHRC
+	
+}
 
 alias_setup(){
 	echo "" >> $BASHRC
