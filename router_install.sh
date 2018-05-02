@@ -5,7 +5,7 @@
 #Created by : br0k3ngl255
 #Desc	    : Installing  DHCP and DNS on server
 #Date		: 30.05.2018
-#Version	: 1.0.33
+#Version	: 1.0.35
 ########################################################################
 
 
@@ -28,13 +28,17 @@ installer=""
 sub_installer=""
 NULL="/dev/null"
 user=""
+password=""
+segement=""
+netmask=""
+gateway=""
 line="\n\n==============================================================\n\n"
 cursor="\n\n###############################################################\n\n"
 BASHRC="/etc/bash.bashrc"
 RBASHRC="/etc/bashrc"
 
-srv_packages=( httpd   php dhcp figlet )
-web_packages=( apache2 php dhcp figlet )
+srv_packages=( httpd   php dhcp figlet  nodejs )
+web_packages=( apache2 php dhcp figlet  nodejs )
 
 
 ##Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -48,10 +52,34 @@ help(){
 	}
 
 error(){
+	printf "$line" 
+		printf "Some thing went wrong --> Please chec the $log at $logFolder "
 	printf "$line"
-	printf "Some thing went wrong --> Please chec the $log at $logFolder "
-	printf "$line"
+	
+		printf "$line" &>> $logFile
+			printf "Some thing went wrong --> Please chec the $log at $logFolder " &>> $logFile
+		printf "$line" &>> $logFile
+	
+	exit 1
 	}
+
+var_setup(){
+	if [[ "$Distro" == "centos" ]] || [[ $Distro == "redhat" ]] || [[ "$Distro" == "fedora" ]];then
+		BASHRC="/etc/bashrc"
+		sub_installer="rpm"
+	else
+		BASHRC="/etc/bash.bashrc"
+		sub_installer="dpkg"
+	fi
+	
+	printf "$line"
+		printf " variables setup\n"
+	printf "$line"
+	
+			printf "$line"  &>> $logFile
+				printf " variables setup\n" &>> $logFile
+			printf "$line"  &>> $logFile
+}
 
 distro_check(){
 	local op=$1
@@ -64,10 +92,12 @@ distro_check(){
 			centos)  installer="yum" ; sub_installer="rpm" ;;
 			*) 		 echo "$Distro is not supported"; exit 1 ;;
 			
-			printf "\nthe $op distro ha been chosen and the install is $installer\n" >> $logFile 
 			printf "$line"
-			printf "\nthe $op distro ha been chosen and the install is $installer\n" 
+				printf "\nthe $op distro has been chosen and the install is $installer\n"
 			printf "$line"
+					printf "$line" &>> $logFile
+						printf "\nthe $op distro has been chosen and the install is $installer\n" &>> $logFile
+					printf "$line" &>> $logFile
 	esac     
 	}
 
@@ -104,7 +134,10 @@ rpm_addon(){
 		printf "$line" &>> $logFile
 		printf "adding epel repo for extending use" &>> $logFile
 		printf "$line" &>> $logFile
-	if []
+	 
+	 printf " $installer install epel-release" &>> $logFile
+		
+			$installer install epel-release &>> $logFile
 	}
 
 
@@ -126,7 +159,7 @@ pack_install(){
 				true
 			else
 				printf "%-50s %s\t"  "preparing to install $i "
-				$installer install -y $i &>> $logFile;sleep $TIME
+					$installer install -y $i &>> $logFile;sleep $time
 
 				if [[ $? != 0 ]];then
 						printf "%-50s %s\t"  "Unable to install $i "
@@ -139,6 +172,36 @@ pack_install(){
 		}
 
 
+user_setup(){
+	
+	while [ -z $user ] && [ -z $password ]
+		do
+			read -p " Please Provide user's NAME for setup" user
+			read -p " Please Provide user's PASSWORD for setup" password
+
+		done
+		
+			if [ $Distro == "redhat" ]	|| [ $Distro == "redhat" ] || [ $Distro == "redhat" ];then
+			
+				useradd -G wheel $user &> $logFile
+				passwd < $password
+			
+			elif [ $Distro == "debian" ] ||[ $Distro == "redhat" ];then
+			
+			
+				
+			else
+					error
+			fi
+}
+
+
+
+alias_setup(){
+	echo "" >> $BASHRC
+	
+	
+}
 ###
 # Main +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ###
