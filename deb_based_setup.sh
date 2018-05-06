@@ -3,13 +3,10 @@
 #Author  : br0k3ngl255
 #Date    : 27.08.3017
 #Purpose : setup systems features on debian based systems.
-#Version : 3.3.38
+#Version : 3.4.3
 ########################################################################
-#TODO: add function that upgrades system if such is needed.
-#TODO: make repository deployment more general and save for each distro.
-#TODO: configure the MATE environment file.
-#TODO: sys_stat function does not works in production.
-#TODO: need to start install from firmware first
+#TODO: redo user/repo/distro deployment function
+#TODO: print out if package is NOT installed
 ########################################################################
 ###Vars ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 logFolder="/tmp"
@@ -36,11 +33,26 @@ PLANK_APP=
 INSTALLER="apt-get"
 export DEBIAN_FRONTEND=noninteractive
 
-dev_packages=( "python-scapy" "python-pip" "python-networkx" "python-netaddr" "python-netifaces" "python-netfilter" "apt-transport-https" "ca-certificates" "curl" "gnupg2" "software-properties-common" "python-gnuplot" "python-mako" "python-radix" "ipython" "ipython3" "python-pycurl" "python-lxml" "python-nmap" "python-flask" "python-scrapy" "perl-modules" "build-essential" "cmake" "bison" "flex" "git"  )
-firmware_packages=( "firmware-misc-nonfree"  "firmware-atheros" "firmware-brcm80211" "firmware-samsung" "firmware-realtek" "firmware-linux" "firmware-linux-free" "firmware-linux-nonfree" "intel-microcode" "firmware-zd1211" )
-gui_packages=( "lightdm" "mate-desktop" "mate-desktop-environment"  "mate-desktop-environment-extra" "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "bash-completion" "plank" "atom" "sqlitebrowser" "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission" "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme" "diffuse" "thunderbird" "virtualbox-5.2" )
-lib_packages=( "libpoe-component-pcap-perl" "libnet-pcap-perllibgtk2.0-dev" "libltdl3-dev" "libncurses-dev" "libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev" "libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool" "libsqlite3-dev" "libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev" "libstdc++6-4.9-dbg" "unrar-free")
-net_packages=( "ethtool" "etherape" "ettercap-graphical" "nmap" "aircrack-ng" "sslsniff"  "sslsplit" )
+dev_packages=( "python-scapy" "python-pip" "python-networkx" "python-netaddr" "python-netifaces" "python-netfilter"\
+ "apt-transport-https" "ca-certificates" "curl" "gnupg2" "software-properties-common" "python-gnuplot" "python-mako"\
+ "python-radix" "ipython" "ipython3" "python-pycurl" "python-lxml" "python-nmap" "python-flask" "python-scrapy"\
+ "perl-modules" "build-essential" "cmake" "bison" "flex" "git"  )
+firmware_packages=( "firmware-misc-nonfree" "firmware-iwlwifi" "firmware-misc-nonfree"  "firmware-atheros" "firmware-brcm80211"\
+ "firmware-samsung" "firmware-samsung"
+ "firmware-realtek" "firmware-linux" "firmware-linux-free" "firmware-linux-nonfree" "intel-microcode" "firmware-zd1211" )
+gui_packages=( "lightdm" "mate-desktop" "mate-desktop-environment"  "mate-desktop-environment-extra"\
+ "mate-desktop-environment-extras" "culmus" "mixxx" "guake" "bash-completion" "plank" "sqlitebrowser"\
+ "pgadmin3" "vim-gtk" "codeblocks" "ninja-ide" "geany" "geany-plugins" "wireshark" "zenmap" "transmission"\
+ "gparted" "vlc" "abiword" "owncloud-client" "vim" "plank" "moka-icon-theme" "faba-icon-theme" "diffuse"\
+ "thunderbird" "virtualbox-5.2" "remmina" )
+lib_packages=( "libpoe-component-pcap-perl" "libnet-pcap-perllibgtk2.0-dev" "libltdl3-dev" "libncurses-dev"\
+ "libusb-1.0-0-dev" "libncurses5-dev" "libbamf3-dev" "libdbusmenu-gtk3-dev" "libgdk-pixbuf2.0-dev" "libgee-dev"\
+  "libglib2.0-dev" "libgtk-3-dev" "libwnck-3-dev" "libx11-dev" "libgee-0.8-dev" "libnet1-dev" "libpcre3-dev"\
+	"libssl-dev" "libcurl4-openssl-dev" "libxmu-dev" "libpcap-dev" "libglib2.0" "libxml2-dev" "libpcap-dev" "libtool"\
+	"libsqlite3-dev" "libhiredis-dev" "libgeoip-dev" "libesd0-dev" "libncurses5-dev" "libusb-1.0-0" "libusb-1.0-0-dev"\
+	"libstdc++6-4.9-dbg" "unrar-free")
+net_packages=( "ethtool" "etherape" "ettercap-graphical" "nmap" "aircrack-ng" "sslsniff"  "sslsplit"\
+  "tcpdump" "tshark" "arp-scan" )
 
 ###Funcs /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 
@@ -105,7 +117,7 @@ net_check(){
 			if [ $net_stat == "1" ] || [ $net_stat == "2" ];then
 				printf "$line"
 				printf "NO NETWORK - Get Online"
-				printf "$line"				
+				printf "$line"
 				return 1
 			elif [ $net_stat == "0" ];then
 				printf "$line"
@@ -121,7 +133,7 @@ net_check(){
 				printf "$line"
 					printf "Updating the file cache";
 				printf "$line"
-					$INSTALLER update &>> $logFile 
+					$INSTALLER update &>> $logFile
 				printf "$line"
 					printf "finished updating repo cache"
 				printf "$line"
@@ -142,14 +154,24 @@ else
 	echo $line
 	echo "no curl installed"
 	echo $line
-	curl_flag=1
+  echo $line
+    echo "Trying to install curl"
+      $INSTALLER install -y curl &> $logFile
+
+      if [ $? == "0" ];
+        curl_flag=0
+      else
+        curl_flag=1
+      fi
+
+    echo $line
 fi
 cd $HOME
     }
 
 
 multi_pac_install(){
-	
+
 	printf "$line"
 	printf "installing FIRMWARE packages"
 	printf "$line"
@@ -161,10 +183,13 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t" "preparing to install $i "
 					$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
-			fi
+          if [ $? == "0" ];then
+				        printf  ".....installed\n"
+          else
+                printf  ".....NOT installed\n";sleep $TIME
+			    fi
 		done
-	
+
 	printf "$line"
 	printf " installing LIB packages"
 	printf "$line"
@@ -176,10 +201,14 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t" "preparing to install $i "
 					$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
+          if [ $? == "0" ];then
+				        printf  ".....installed\n"
+          else
+                printf  ".....NOT installed\n";sleep $TIME
+			    fi
 			fi
 		done
-	
+
 	printf "$line"
 	printf "installing DEV packages"
 	printf "$line"
@@ -191,16 +220,14 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t"  "preparing to install $i "
 				$INSTALLER install -y $i &>> $logFile;sleep $TIME
-
-				if [[ $? != 0 ]];then
-						printf "%-50s %s\t"  "Unable to install $i "
-						printf "NOT installed\n"
-				else 
-						printf "installed\n"
-				fi
+        if [ $? == "0" ];then
+              printf  ".....installed\n"
+        else
+              printf  ".....NOT installed\n";sleep $TIME
+        fi
 			fi
 		done
-		
+
 	printf "$line"
 	printf " installing GUI packages"
 	printf "$line"
@@ -213,10 +240,13 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t" "preparing to install $i"
 				 $INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
-			fi
+         if [ $? == "0" ];then
+               printf  ".....installed\n"
+         else
+               printf  ".....NOT installed\n";sleep $TIME
+         fi
 		done
-		
+
 	printf "$line"
 	printf " installing NET packages"
 	printf "$line"
@@ -228,9 +258,12 @@ multi_pac_install(){
 			else
 				printf "%-50s %s\t" "preparing to install $i "
 					$INSTALLER install -y $i &>> $logFile;sleep $TIME
-				printf  ".....installed\n"
-			fi
-		done	
+          if [ $? == "0" ];then
+                printf  ".....installed\n"
+          else
+                printf  ".....NOT installed\n";sleep $TIME
+          fi			fi
+		done
 	}
 
 set_general_user(){
@@ -267,14 +300,15 @@ set_bash_completion(){
     fi
 }
 
-set_working_env(){ #user env setup
+set_working_eenv(){ #user env setup
 	  printf "sed -i 's/PS1/#PS1/g' /etc/bash.bashrc\n" &>> $logFile
 			sed -i 's/PS1/#PS1/g' /etc/bash.bashrc
-          printf "alias l=ls; alias ll='ls -l'; alias la='ls -la';alias lh='ls -lh' \n
-                  alias more=less; alias vi=vim; alias cl=clear; alias mv='mv -v'; alias cp='cp -v'; \n
-                  alias log='cd /var/log'; alias drop_caches='echo 3 > /proc/sys/vm/drop_caches'; \n
-                  alias ip_forward='echo 1 > /proc/sys/net/ipv4/ip_forward'; \n
-                  alias self_destruct='dd if=/dev/zero of=/dev/sda' \n
+          echo "
+                  alias l=ls; alias ll='ls -l'; alias la='ls -la';alias lh='ls -lh'
+                  alias more=less; alias vi=vim; alias cl=clear; alias mv='mv -v'; alias cp='cp -v';
+                  alias log='cd /var/log'; alias drop_caches='echo 3 > /proc/sys/vm/drop_caches';
+                  alias ip_forward='echo 1 > /proc/sys/net/ipv4/ip_forward';
+                  alias self_destruct='dd if=/dev/zero of=/dev/sda'
                   " >> $BASHRC;
                 source $BASHRC
                 file_check=$(ls /usr/share/backgrounds/cosmos/comet.jpg >> /dev/null;printf "$?\n")
@@ -292,30 +326,9 @@ set_working_env(){ #user env setup
                                     grub-mkconfig -o $GEN_GRUB_CONFIG
                             fi
 	    }
-: '
-create_grub_update(){
-if [ -e /usr/sbin/update-grub ];then
-    true
-else
-    printf "
-#!/bin/sh\n
-set -e\n
-exec grub-mkconfig -o /boot/grub/grub.cfg \"$@\"\n
-    "> /usr/sbin/update-grub
-fi
-    }
-    
-set_up_plank(){
-	if [ which plank ];then
-		for i in ${PLANK_APP[@]}
-			do
-				printf ""
-		
-	
-	}
-'
+
 jBase_install(){
-	
+
 	if [ $(which curl) ];then
 		printf "$line"
 		printf "installing SDKMAN"
@@ -330,16 +343,16 @@ jBase_install(){
 }
 
 set_docker_ce(){
-	
+
 	if [ $curl_flag == 0 ];then
 		add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs)  stable"
 		$INSTALLER install docker-ce -y &> $logFile
 		sleep $TIME
 		systemctl restart docker
-		
+
 	else
 		true
-		
+
 	fi
 	}
 
@@ -351,13 +364,13 @@ if [[ $EUID == "0" ]];then
 		while getopts ":i:u:p:I:U:P:" opt;
 			do
 				case $opt in
-					I|i) 
+					I|i)
 						INSTALLER="$OPTARG"
 							;;
-					U|u) 
+					U|u)
 						USER="$OPTARG"
 							;;
-					P|p) 
+					P|p)
 							PASSWD="$OPTARG"
 							;;
 					*)  help; exit 1 ;;
@@ -402,12 +415,12 @@ if [[ $EUID == "0" ]];then
 						printf "setting up repository"
 						printf "$cursor"
 							insert_repo $REPONAME
-						printf "$cursor"					
+						printf "$cursor"
 						printf "setting up repository COMPLETE"
 						printf "$cursor"
-						
+
 						sleep $TIME
-						
+
 						if net_check;then
 					#		set_working_env # is used twice
 					#		sys_stat
